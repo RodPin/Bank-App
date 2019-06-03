@@ -7,27 +7,38 @@ import {
   Text
 } from "react-native";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import { Fumi } from "react-native-textinput-effects";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import Pig from "../components/Pig";
 import * as actions from "../redux/authReducer";
 const WIDTH = Dimensions.get("window").width;
 class Login extends Component {
-  state = { account: "", password: "", buttonActive: false };
+  static navigationOptions = { header: null };
+  state = { account: "", password: "", buttonActive: false, loginOk: false };
 
-  firebaseLogin(account, password) {
-    firebase
-      .database()
-      .ref()
-      .child("users/" + account)
-      .once("value", snap => {
-        if (password == snap.val().password) {
-          this.props.setAuthUser(account);
-        }
-      });
+  navigateWithAuth(account) {
+    this.props.navigation.navigate("Main", { acc: account });
+  }
+
+  login(account, password) {
+    if (account == "12345") {
+      if (password == "1234") {
+        this.navigateWithAuth(account);
+      } else {
+        console.log("error password");
+      }
+    } else if (account == "21999519951") {
+      if (password == "1234") {
+        this.navigateWithAuth(account);
+      } else {
+        console.log("error password");
+      }
+    } else {
+      console.log("Login Code Login");
+    }
   }
   renderButton() {
     const { buttonActive, account, password } = this.state;
@@ -36,7 +47,7 @@ class Login extends Component {
         <Animatable.View animation={"fadeIn"} duration={1000}>
           <TouchableOpacity
             onPress={() => {
-              this.firebaseLogin(account, password);
+              this.login(account, password);
             }}
           >
             <View style={{ alignSelf: "center" }}>
@@ -55,14 +66,7 @@ class Login extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Animatable.View animation={"fadeIn"} duration={1500}>
-          <FontAwesomeIcon5
-            name="piggy-bank"
-            color="white"
-            size={100}
-            style={{ alignSelf: "center", marginTop: 30 }}
-          />
-        </Animatable.View>
+        <Pig />
         <Animatable.View animation={"fadeIn"} duration={2000} delay={1000}>
           <View
             style={[

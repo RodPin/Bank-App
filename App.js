@@ -17,6 +17,24 @@
 //     .ref()
 //     .child("users/" + acc);
 // }
+
+//   saque(acc, quant) {
+//     getAcc(acc)
+//       .once("value", function(snapshot) {
+//         var saldo = snapshot.val().saldo;
+//         if (quant <= saldo) {
+//           getAcc(acc)
+//             .update({
+//               saldo: saldo - quant
+//             })
+//             .then(() => this.register(acc, quant, "saque"));
+//           console.log("saque de R$ " + quant + ",00 realizado com sucesso");
+//         } else {
+//           console.log("tentou sacar mais q tem");
+//         }
+//       })
+//       .then(() => this.register(acc, quant, "saque"));
+//   }
 // export default class App extends Component {
 //   saldo() {
 //     ref.once("value", function(snapshot) {
@@ -50,24 +68,6 @@
 //     getAcc(acc)
 //       .child("transacoes")
 //       .push(registerJSON);
-//   }
-
-//   saque(acc, quant) {
-//     getAcc(acc)
-//       .once("value", function(snapshot) {
-//         var saldo = snapshot.val().saldo;
-//         if (quant <= saldo) {
-//           getAcc(acc)
-//             .update({
-//               saldo: saldo - quant
-//             })
-//             .then(() => this.register(acc, quant, "saque"));
-//           console.log("saque de R$ " + quant + ",00 realizado com sucesso");
-//         } else {
-//           console.log("tentou sacar mais q tem");
-//         }
-//       })
-//       .then(() => this.register(acc, quant, "saque"));
 //   }
 
 //   transfTo(acc, quant) {
@@ -158,6 +158,7 @@ import firebase from "firebase";
 import Login from "./src/views/login";
 import { Provider } from "react-redux";
 import store from "./src/store";
+import RootNavigator from "./src/navigators/rootNavigator";
 
 var firebaseConfig = {
   apiKey: "AIzaSyCy1nUNwKGcUD8Qg8xntedzC3TVH1FseNg",
@@ -179,7 +180,7 @@ export default class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Login />
+        <RootNavigator />
       </Provider>
     );
   }
