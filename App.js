@@ -18,23 +18,6 @@
 //     .child("users/" + acc);
 // }
 
-//   saque(acc, quant) {
-//     getAcc(acc)
-//       .once("value", function(snapshot) {
-//         var saldo = snapshot.val().saldo;
-//         if (quant <= saldo) {
-//           getAcc(acc)
-//             .update({
-//               saldo: saldo - quant
-//             })
-//             .then(() => this.register(acc, quant, "saque"));
-//           console.log("saque de R$ " + quant + ",00 realizado com sucesso");
-//         } else {
-//           console.log("tentou sacar mais q tem");
-//         }
-//       })
-//       .then(() => this.register(acc, quant, "saque"));
-//   }
 // export default class App extends Component {
 //   saldo() {
 //     ref.once("value", function(snapshot) {

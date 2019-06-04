@@ -14,6 +14,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Pig from "../components/Pig";
 import * as actions from "../redux/authReducer";
+import { GREEN } from "../utils";
 const WIDTH = Dimensions.get("window").width;
 class Login extends Component {
   static navigationOptions = { header: null };
@@ -79,12 +80,12 @@ class Login extends Component {
             <Fumi
               label={"Account Number"}
               inputStyle={{
-                color: "#00b33c",
+                color: GREEN,
                 width: WIDTH * 0.8
               }}
               iconClass={FontAwesomeIcon}
               iconName={"user"}
-              iconColor={"#00b33c"}
+              iconColor={GREEN}
               iconSize={15}
               maxLength={5}
               keyboardType="numeric"

@@ -38,21 +38,20 @@ class Extract extends Component {
     });
     getAcc(user).on("value", snapshot => {
       var arrayTransf = [];
-      console.log(snapshot.val().transacoes);
-      // snapshot.val().transacoes.forEach(data => {
-      //   console.log(data);
-      //   arrayTransf.push({
-      //     key: data.key,
-      //     data: data.val()
-      //   });
-      // });
-      // this.setState({ transf: arrayTransf });
+
+      // alert(snapshot.val().transacoes["-LgQ988CX2PJlVpZ1e62"]["data"]);
+      var array = Object.values(snapshot.val().transacoes);
+      array.forEach(data => {
+        arrayTransf.push(data);
+      });
+      this.setState({ transf: arrayTransf });
     });
   }
 
   renderDisplays() {
     var aux = [];
     this.state.transf.map((x, i) => {
+      // alert(x);
       aux.push(<ExtractDisplay i={i} transf={x} />);
     });
     return aux;
