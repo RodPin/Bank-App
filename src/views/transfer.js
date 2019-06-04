@@ -38,7 +38,7 @@ class Transfer extends Component {
         saldo: saldo - (quant + tax)
       })
       .then(() => {
-        register(acc, -quant, "Transf In", tax);
+        register(acc, quant, "Transf In", tax);
       });
   }
 
