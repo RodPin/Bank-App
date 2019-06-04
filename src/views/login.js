@@ -9,36 +9,43 @@ import {
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import { Fumi } from "react-native-textinput-effects";
 import * as Animatable from "react-native-animatable";
-import firebase from "firebase";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Pig from "../components/Pig";
-import * as actions from "../redux/authReducer";
-import { GREEN } from "../utils";
+import { setAuthUser } from "../redux/authReducer";
+import { GREEN, getAcc } from "../utils";
+import ErrorText from "../components/ErrorText";
 const WIDTH = Dimensions.get("window").width;
 class Login extends Component {
   static navigationOptions = { header: null };
-  state = { account: "", password: "", buttonActive: false, loginOk: false };
+  state = {
+    account: "",
+    password: "",
+    error: "",
+    buttonActive: false,
+    loginOk: false
+  };
 
   navigateWithAuth(account) {
-    this.props.navigation.navigate("Main", { acc: account });
+    getAcc(account).on("value", snapshot => {
+      this.props.navigation.navigate("Main", { account });
+    });
   }
-
   login(account, password) {
     if (account == "12345") {
       if (password == "1234") {
         this.navigateWithAuth(account);
       } else {
-        console.log("error password");
+        this.setState({ error: "Password invalid" });
       }
-    } else if (account == "21999519951") {
+    } else if (account == "54321") {
       if (password == "1234") {
         this.navigateWithAuth(account);
       } else {
-        console.log("error password");
+        this.setState({ error: "Password invalid" });
       }
     } else {
-      console.log("Login Code Login");
+      this.setState({ error: "Account Numbers invalid" });
     }
   }
   renderButton() {
@@ -102,7 +109,7 @@ class Login extends Component {
               iconColor={"#00b33c"}
               onChangeText={text => {
                 this.setState({ password: text });
-                if (text.length == 3) {
+                if (text.length > 2) {
                   this.setState({ buttonActive: true });
                 }
               }}
@@ -110,7 +117,7 @@ class Login extends Component {
           </View>
           {this.renderButton()}
         </Animatable.View>
-
+        <ErrorText label={this.state.error} />
         <View />
         <View />
       </View>
@@ -147,7 +154,7 @@ const styles = StyleSheet.create({
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      setAuthUser: actions.setAuthUser
+      setAuthUser
     },
     dispatch
   );

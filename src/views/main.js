@@ -1,14 +1,12 @@
 import React, { Component } from "react";
 import {
-  TouchableOpacity,
-  StyleSheet,
+  Modal,
   ActivityIndicator,
   Dimensions,
   View,
-  Text
+  Text,
+  Button
 } from "react-native";
-import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
-import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import { Fumi } from "react-native-textinput-effects";
 import * as Animatable from "react-native-animatable";
 import firebase from "firebase";
@@ -17,30 +15,16 @@ import { connect } from "react-redux";
 import * as actions from "../redux/authReducer";
 import AnimatedButton from "../components/AnimatedButton";
 import Pig from "../components/Pig";
-function getAcc(acc) {
-  return firebase
-    .database()
-    .ref()
-    .child("users/" + acc);
+import { getAcc } from "../utils";
+
+function reverseString(str) {
+  var newString = "";
+  for (var i = str.length - 1; i >= 0; i--) {
+    newString += str[i];
+  }
+  return newString;
 }
 
-//   saque(acc, quant) {
-//     getAcc(acc)
-//       .once("value", function(snapshot) {
-//         var saldo = snapshot.val().saldo;
-//         if (quant <= saldo) {
-//           getAcc(acc)
-//             .update({
-//               saldo: saldo - quant
-//             })
-//             .then(() => this.register(acc, quant, "saque"));
-//           console.log("saque de R$ " + quant + ",00 realizado com sucesso");
-//         } else {
-//           console.log("tentou sacar mais q tem");
-//         }
-//       })
-//       .then(() => this.register(acc, quant, "saque"));
-//   }
 const WIDTH = Dimensions.get("window").width;
 class Main extends Component {
   state = {
@@ -48,27 +32,82 @@ class Main extends Component {
     password: "",
     buttonActive: false,
     loginOk: false,
-    saldo: ""
+    saldo: "",
+    managerVisitConfimation: false
   };
   static navigationOptions = { header: null };
 
-  componentWillMount() {
-    // const user = this.props.navigation.getParam("acc");
-
-    const user = "12345";
-    this.setState({
-      user
-    });
-    getAcc(user).on("value", snapshot => {
+  updateTotal(userCode) {
+    getAcc(userCode).on("value", snapshot => {
       this.setState({ saldo: Math.round(snapshot.val().saldo * 100) / 100 });
     });
   }
+  componentDidMount() {
+    const user = this.props.navigation.getParam("account");
+    this.setState({ user });
+    this.updateTotal(user);
+  }
 
+  managerVisit(acc) {
+    getAcc(acc).once("value", snapshot => {
+      var saldo = snapshot.val().saldo;
+      getAcc(acc).update({
+        saldo: saldo - 50
+      });
+    });
+  }
+  renderModal() {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={this.state.managerVisitConfimation}
+      >
+        <View style={{ marginTop: 22 }}>
+          <View>
+            <Text>Are you sure you want to call the manager?</Text>
+            <View
+              style={{
+                flexDirection: "row",
+
+                marginHorizontal: 10
+              }}
+            >
+              <Button
+                color="green"
+                title="yes"
+                onPress={() => {
+                  this.managerVisit(this.state.user);
+                  this.setState({
+                    managerVisitConfimation: !this.state.managerVisitConfimation
+                  });
+                }}
+              />
+              <Button
+                color="red"
+                title="no"
+                onPress={() =>
+                  this.setState({
+                    managerVisitConfimation: !this.state.managerVisitConfimation
+                  })
+                }
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  }
   render() {
     const { saldo } = this.state;
     return (
       <View style={{ backgroundColor: "black", flex: 1 }}>
+        {this.renderModal()}
         <View style={{ marginTop: 10 }}>
+          <Text style={{ color: "white", textAlign: "center" }}>
+            Usuario logado:
+            {this.state.user}
+          </Text>
           {saldo ? (
             <Text
               style={{
@@ -84,36 +123,63 @@ class Main extends Component {
             <ActivityIndicator color="white" />
           )}
         </View>
+        {//if its vip
+        this.state.user == "54321" && (
+          <AnimatedButton
+            label="Visita do gerente"
+            onPress={() =>
+              this.setState({
+                managerVisitConfimation: !this.state.managerVisitConfimation
+              })
+            }
+            i={0}
+          />
+        )}
         <AnimatedButton
           label="Extrato"
-          onPress={() => this.props.navigation.navigate("Extract")}
+          onPress={() =>
+            this.props.navigation.navigate("Extract", {
+              account: this.state.user
+            })
+          }
           i={1}
         />
         <AnimatedButton
           label="Saque"
-          onPress={() => console.log("saque")}
+          onPress={() =>
+            this.props.navigation.navigate("WithDraw", {
+              account: this.state.user
+            })
+          }
           i={2}
         />
         <AnimatedButton
           label="Deposito"
-          onPress={() => console.log("saque")}
+          onPress={() =>
+            this.props.navigation.navigate("Deposit", {
+              account: this.state.user
+            })
+          }
           i={3}
         />
         <AnimatedButton
           label="Transferencia"
-          onPress={() => console.log("saque")}
+          onPress={() =>
+            this.props.navigation.navigate("Transfer", {
+              account: this.state.user
+            })
+          }
           i={4}
         />
 
         <AnimatedButton
-          label="Visita do gerente"
-          onPress={() => console.log("saque")}
-          i={5}
-        />
-        <AnimatedButton
           label="Trocar de usuário"
-          onPress={() => console.log("saque")}
-          i={6}
+          onPress={() => {
+            const user = this.state.user;
+            this.setState({ user: reverseString(user) });
+            this.updateTotal(reverseString(user));
+          }}
+          i={5}
         />
 
         <Pig i={7} />

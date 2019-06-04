@@ -5,37 +5,32 @@ import {
   ActivityIndicator,
   Dimensions,
   View,
-  Text
+  Text,
+  ScrollView
 } from "react-native";
 import FontAwesomeIcon from "react-native-vector-icons/FontAwesome";
 import FontAwesomeIcon5 from "react-native-vector-icons/FontAwesome5";
 import { Fumi } from "react-native-textinput-effects";
 import * as Animatable from "react-native-animatable";
-import firebase from "firebase";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import * as actions from "../redux/authReducer";
 import AnimatedButton from "../components/AnimatedButton";
+import { getAcc } from "../utils";
 import Pig from "../components/Pig";
 import ExtractDisplay from "../components/AnimatedExtractDisplay";
-function getAcc(acc) {
-  return firebase
-    .database()
-    .ref()
-    .child("users/" + acc);
-}
 
 const WIDTH = Dimensions.get("window").width;
 class Extract extends Component {
   state = {
     transf: []
   };
-
+  static navigationOptions = {
+    headerTitle: "Extrato"
+  };
   componentWillMount() {
-    const user = "12345";
-    this.setState({
-      user
-    });
+    const user = this.props.navigation.getParam("account");
+
     getAcc(user).on("value", snapshot => {
       var arrayTransf = [];
 
@@ -44,7 +39,7 @@ class Extract extends Component {
       array.forEach(data => {
         arrayTransf.push(data);
       });
-      this.setState({ transf: arrayTransf });
+      this.setState({ transf: arrayTransf.reverse() });
     });
   }
 
@@ -59,10 +54,10 @@ class Extract extends Component {
   render() {
     const { saldo } = this.state;
     return (
-      <View style={{ backgroundColor: "black", flex: 1 }}>
+      <ScrollView style={{ backgroundColor: "black", flex: 1 }}>
         {this.renderDisplays()}
         <Pig i={7} />
-      </View>
+      </ScrollView>
     );
   }
 }

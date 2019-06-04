@@ -1,7 +1,7 @@
 import React from "react";
 import AnimatedWrapper from "./AnimatedWrapper";
 import { View, TouchableOpacity, Text } from "react-native";
-const button = ({ onPress, i, label }) => {
+const button = ({ onPress, i, label, thin }) => {
   return (
     <AnimatedWrapper i={i}>
       <TouchableOpacity onPress={onPress}>
@@ -10,7 +10,7 @@ const button = ({ onPress, i, label }) => {
             alignSelf: "center",
             width: 250,
             height: 50,
-            borderWidth: 1,
+            borderWidth: thin ? 0 : 1,
             borderRadius: 10,
             borderColor: "white",
             marginTop: 10,

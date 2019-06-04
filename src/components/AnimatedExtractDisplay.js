@@ -28,6 +28,8 @@ function getIconNameAndColor(tipo) {
       return { color: BLUE, icon: "call-received" };
     case "Saque":
       return { color: PINK, icon: "upload-outline" };
+    default:
+      return { color: "purple", icon: "upload-outline" };
   }
 }
 

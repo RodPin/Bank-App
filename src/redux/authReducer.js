@@ -1,6 +1,8 @@
 // Initial state
+import produce from "immer";
+
 const initialState = {
-  account: ""
+  userData: null
 };
 
 // Actions
@@ -8,8 +10,9 @@ const SET_USER = "AuthState/SET_USER";
 
 // Action creators
 export function setAuthUser(payload) {
-  console.log("payload");
+  console.log("setAuthUser");
   console.log(payload);
+
   return dispatch =>
     dispatch({
       type: SET_USER,
@@ -17,13 +20,17 @@ export function setAuthUser(payload) {
     });
 }
 // Reducer
-export default function AuthStateReducer(state = initialState, action = {}) {
+
+export default produce((draft, action) => {
   switch (action.type) {
     case SET_USER:
-      console.log(action);
-      state.account = action.payload;
-      return state;
+      console.log("action.type");
+      console.log(action.payload);
+      draft.userData = "asdok";
+      console.log(draft);
+      console.log(draft.userData);
+      return draft;
     default:
-      return state;
+      return draft;
   }
-}
+}, initialState);
